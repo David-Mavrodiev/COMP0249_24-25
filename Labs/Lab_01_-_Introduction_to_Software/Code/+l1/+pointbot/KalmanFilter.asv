@@ -160,31 +160,10 @@ classdef KalmanFilter < ebe.localization.LocalizationSystem
             % either update them multiple times, or do a single large
             % update.
 
-            % Extract array of bearing measurements (z) and sensor IDs from the event
-            zArray    = event.data;    % array of measured bearings
-            sensorIDs = event.info;    % list of sensor indices that see the robot
-
             % Predict each measurement
             for s = 1 : numel(event.info)
                 sensor = obj.scenario.sensors.bearing.sensors(event.info(s));
                 [zPred, H, R] = obj.systemModel.predictBearingObservation(x, sensor.position, sensor.orientation);
-                
-                % Actual bearing measurement from the event data
-                zMeas = zArray(i);          % single scalar bearing measurement
-                v    = zMeas - zPred;       % innovation (residual)
-                
-                % Innovation covariance
-                S = H * P * H' + R;
-                
-                % Kalman gain
-                K = P * H' / S;   % For scalar S, this is just a double
-               
-                % State update
-                x = x + K * v;
-                
-                % Covariance update
-                I = eye(size(P));
-                P = (I - K * H) * P;
             end
 
             obj.xEst = x;

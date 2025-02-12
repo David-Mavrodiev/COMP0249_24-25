@@ -27,9 +27,36 @@ simulatorViewer.start();
 % This is the main loop - while the simulator says we should keep going, we
 % step the simulator, extract the events which were generated, and
 % visualize them.
-while (simulator.keepRunning()  == true)
+% main loop - while the simulator says we should keep going, step it
+% and process events
+while simulator.keepRunning()
     simulator.step();
+
     events = simulator.events();
+    if ~isempty(events)
+        disp('=== New Events This Step ===');
+        for i = 1:numel(events)
+            e = events{i}; % curly braces if events is a cell array
+
+            fprintf('  Event %d:\n', i);
+            fprintf('    Time: %.3f\n', e.time);
+            fprintf('    Type: %s\n', e.type);
+
+            if isprop(e, 'eventGeneratorStepNumber')
+                fprintf('    Step #: %d\n', e.eventGeneratorStepNumber);
+            end
+
+            if isprop(e, 'data') && ~isempty(e.data)
+                fprintf('    Data: %s\n', mat2str(e.data));
+            end
+
+            % No references to e.args
+        end
+        disp('----------------------------------')
+    end
+
     simulatorViewer.visualize(events);
-    drawnow
+    drawnow;
 end
+
+

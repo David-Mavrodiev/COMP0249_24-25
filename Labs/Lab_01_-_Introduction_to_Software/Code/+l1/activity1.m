@@ -16,7 +16,7 @@ simulator.start();
 fig = FigureManager.getFigure("Simulator Output");
 clf
 hold on
-axis([-10 10 -10 10])
+axis([-80 80 -80 80])
 axis square
 
 % Set up the view which show the output of the simulator and start it
@@ -34,4 +34,19 @@ while (simulator.keepRunning()  == true)
     drawnow
 end
 
-[TSimulator, XTrueHistory] = simulator.history();
+% Retrieve the stored histories
+[timeHistory, xTrueHistory] = simulator.history();
+
+% Find the smallest and largest times
+minTime = min(timeHistory);
+maxTime = max(timeHistory);
+
+% (Optional) Find the smallest and largest entries in the state history
+minStateValue = min(xTrueHistory(:));  % Flatten xTrueHistory into a vector
+maxStateValue = max(xTrueHistory(:));
+
+% Display results
+disp('Minimum time:'), disp(minTime)
+disp('Maximum time:'), disp(maxTime)
+disp('Minimum state value:'), disp(minStateValue)
+disp('Maximum state value:'), disp(maxStateValue)

@@ -42,3 +42,35 @@ while (simulator.keepRunning()  == true)
     simulatorViewer.visualize(events);
     drawnow
 end
+
+% Retrieve the time history, state, and diagonal of covariance
+[T, X, PX] = kf.estimateHistory();
+
+% X is typically a 4 x N matrix, where N is the number of time steps
+% PX is typically a 4 x N matrix, holding diag(PEst) at each step
+
+figure('Name','Kalman Filter Estimate History','NumberTitle','off');
+
+% ----------------------------
+% Plot X(1) and X(3), i.e., x and y positions over time
+subplot(2,1,1);
+plot(T, X(1,:), 'r-o','DisplayName','x-position');
+hold on;
+plot(T, X(3,:), 'b-o','DisplayName','y-position');
+grid on;
+xlabel('Time (s)');
+ylabel('Position (m)');
+legend('Location','best');
+title('Estimated Position Over Time');
+
+% ----------------------------
+% Plot PX(1) and PX(3), i.e., variance in x and y
+subplot(2,1,2);
+plot(T, PX(1,:), 'r-o','DisplayName','Var(x)');
+hold on;
+plot(T, PX(3,:), 'b-o','DisplayName','Var(y)');
+grid on;
+xlabel('Time (s)');
+ylabel('Variance');
+legend('Location','best');
+title('Covariance Diagonal Over Time');
